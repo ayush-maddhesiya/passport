@@ -2,26 +2,24 @@ var express = require('express');
 var mongoose = require('mongoose')
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
-var crypto = require('crypto');
-// var db = require('../db');
-var User = require('../model/user.model.js')
+const User = require('../model/user.model.js')
 var router = express.Router();
-
+// const bcrypt = require('bcryptjs');  
 
 passport.use(new LocalStrategy({
-  username: 'email', // Customize username field if needed (default: 'username')
+  username: 'username', 
   passwordField: 'password'
 }, async (email, password, done) => {
   try {
-    const user = await User.findOne({ email }); // Find user by email
+    const user = await User.findOne({ username:email }); // Find user by email
     console.log(user,"here");
     if (!user) {
       return done(null, false, { message: 'Incorrect email or password.' });
     }
 
     // Validate password using bcrypt
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    
+    if (password === user.password) {
       return done(null, false, { message: 'Incorrect email or password.' });
     }
 
